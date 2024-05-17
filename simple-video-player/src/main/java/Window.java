@@ -258,6 +258,7 @@ public class Window extends JFrame {
         };
     }
 
+    //设置北京
     private ComponentAdapter setListWindowBackgroundWhenShownOrHidden() {
         return new ComponentAdapter() {
             @Override
@@ -287,6 +288,7 @@ public class Window extends JFrame {
         }
     }
 
+    //选择文件按钮
     private MouseAdapter mouseClickedChooseFiles() {
         return new MouseAdapter() {
             @Override
@@ -310,6 +312,7 @@ public class Window extends JFrame {
                 continueTimer.stop();
                 videoIndex = 0;
                 loading();
+                initPlay();
             }
         };
     }
@@ -358,6 +361,7 @@ public class Window extends JFrame {
         getMediaPlayer().setVolume(value);
     }
 
+    //初始化媒体路径
     private void initVideoFilesPath(String videoFolder) {
         videos = FileUtils.readFilePath(videoFolder);
         videos.sort(Comparator.naturalOrder());
@@ -365,14 +369,16 @@ public class Window extends JFrame {
         // System.out.println(videos);
     }
 
+    //加载
     private void loading() {
         if (videos.isEmpty()) {
             return;
         }
         String path = videos.get(videoIndex);
-        setTitle("VideoPlayer-" + FileUtils.getFileName(path) + "（预加载）");
+        setTitle("媒体播放器" + FileUtils.getFileName(path) + "（预加载）");
     }
 
+    //初始化播放
     private void initPlay() {
         if (videos.isEmpty()) {
             return;
@@ -386,6 +392,7 @@ public class Window extends JFrame {
         this.firstPlay = false;
     }
 
+    //播放
     private void play() {
         if (videos.isEmpty()) {
             return;
@@ -396,7 +403,12 @@ public class Window extends JFrame {
 
     private void setWindowTitle() {
         String title = getMediaPlayer().getMediaMeta().getTitle();
-        setTitle("VideoPlayer-" + title);
+        setTitle("媒体播放器-正在播放:" + title);
+    }
+
+    private void setWindowTitle1() {
+        String title = getMediaPlayer().getMediaMeta().getTitle();
+        setTitle("媒体播放器-暂停播放:" + title);
     }
 
     private String getTimeString(long curr, long total) {
@@ -599,10 +611,12 @@ public class Window extends JFrame {
     private void setMediaStatusAndPauseButton() {
         if (getMediaPlayer().isPlaying()) {
             getMediaPlayer().pause();
+            setWindowTitle();
             pauseButton.setLabel("播放");
         } else {
             getMediaPlayer().play();
             pauseButton.setLabel("暂停");
+            setWindowTitle1();
         }
     }
 
