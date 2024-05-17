@@ -1,7 +1,5 @@
 # simple-video-player
 
-![image](https://user-images.githubusercontent.com/41880446/121799182-33527980-cc5d-11eb-8040-3d36ea6b1445.png)
-
 ## 功能
 1、当窗口获取焦点后，按空格暂停/播放
 
@@ -16,4 +14,4 @@
 6、选择文件（支持多选）、查看播放文件列表
 
 ## 项目与工具
-maven、java8、vlc-3.8.0、log4j-2.13.3
+maven、java17、vlc-3.8.0、log4j-2.13.3
