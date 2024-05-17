@@ -67,7 +67,7 @@ public class Window extends JFrame {
         // 设置默认速度为原速
         speed = 1.0f;
         // 设置窗口标题
-        setTitle("VideoPlayer");
+        setTitle("媒体播放器");
         // 设置窗口焦点监听事件：窗口打开时、窗口获得焦点时设置默认焦点为暂停按钮
         this.addWindowFocusListener(getWindowFocusListener());
 
@@ -599,10 +599,10 @@ public class Window extends JFrame {
     private void setMediaStatusAndPauseButton() {
         if (getMediaPlayer().isPlaying()) {
             getMediaPlayer().pause();
-            pauseButton.setLabel("play");
+            pauseButton.setLabel("▶");
         } else {
             getMediaPlayer().play();
-            pauseButton.setLabel("pause");
+            pauseButton.setLabel("||");
         }
     }
 

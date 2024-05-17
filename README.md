@@ -17,6 +17,3 @@
 
 ## 项目与工具
 maven、java8、vlc-3.8.0、log4j-2.13.3
-
-## 说明
-此项目包含vlc资源，见vlc文件夹，升级版本未包含vlc资源，详见其说明。升级版本：https://github.com/cxzgwing/video-player
