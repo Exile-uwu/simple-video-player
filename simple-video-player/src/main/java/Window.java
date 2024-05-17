@@ -82,7 +82,7 @@ public class Window extends JFrame {
         //setExtendedState(JFrame.MAXIMIZED_BOTH);
 
         // 图标
-        Image icon = Toolkit.getDefaultToolkit().getImage("resources/icon.jpeg");
+        Image icon = Toolkit.getDefaultToolkit().getImage("/resources/icon.jpeg");
         this.setIconImage(icon);
 
         // 主面板
