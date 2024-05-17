@@ -74,12 +74,16 @@ public class Window extends JFrame {
         // 窗口关闭事件：释放资源并退出程序
         addWindowListener(closeWindowReleaseMedia());
         // 设置默认窗口关闭事件
-        // setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // 设置窗口位置
         setBounds(WINDOW_X, WINDOW_Y, WINDOW_WIDTH, WINDOW_HEIGHT);
         // 最大化显示窗口
-        // setExtendedState(JFrame.MAXIMIZED_BOTH);
+        //setExtendedState(JFrame.MAXIMIZED_BOTH);
+
+        // 图标
+        Image icon = Toolkit.getDefaultToolkit().getImage("resources/icon.jpeg");
+        this.setIconImage(icon);
 
         // 主面板
         JPanel contentPane = new JPanel();
@@ -97,7 +101,7 @@ public class Window extends JFrame {
         player.add(mediaPlayerComponent);
         // 视频表面焦点监听：表面获得焦点时设置默认焦点为暂停按钮
         getVideoSurface().addFocusListener(videoSurfaceFocusAction());
-        // getMediaPlayer().setRepeat(true); // 重复播放
+        getMediaPlayer().setRepeat(true); // 重复播放
 
         // ======底部面板======
         JPanel bottomPanel = new JPanel();
@@ -114,9 +118,9 @@ public class Window extends JFrame {
         // 设置进度条中间显示进度百分比
         progress.setStringPainted(false);
         // 进度条进度的颜色
-        progress.setForeground(new Color(46, 145, 228));
+        progress.setForeground(new Color(0, 0, 0));
         // 进度条背景的颜色
-        progress.setBackground(new Color(220, 220, 220));
+        progress.setBackground(new Color(255, 255, 255));
 
         // 点击进度条调整视频播放指针
         progress.addMouseListener(setVideoPlayPoint());
@@ -258,7 +262,7 @@ public class Window extends JFrame {
         };
     }
 
-    //设置北京
+    // 设置北京
     private ComponentAdapter setListWindowBackgroundWhenShownOrHidden() {
         return new ComponentAdapter() {
             @Override
@@ -288,7 +292,7 @@ public class Window extends JFrame {
         }
     }
 
-    //选择文件按钮
+    // 选择文件按钮
     private MouseAdapter mouseClickedChooseFiles() {
         return new MouseAdapter() {
             @Override
@@ -361,15 +365,7 @@ public class Window extends JFrame {
         getMediaPlayer().setVolume(value);
     }
 
-    //初始化媒体路径
-    private void initVideoFilesPath(String videoFolder) {
-        videos = FileUtils.readFilePath(videoFolder);
-        videos.sort(Comparator.naturalOrder());
-        videoIndex = 0;
-        // System.out.println(videos);
-    }
-
-    //加载
+    // 加载
     private void loading() {
         if (videos.isEmpty()) {
             return;
@@ -378,7 +374,7 @@ public class Window extends JFrame {
         setTitle("媒体播放器" + FileUtils.getFileName(path) + "（预加载）");
     }
 
-    //初始化播放
+    // 初始化播放
     private void initPlay() {
         if (videos.isEmpty()) {
             return;
@@ -390,15 +386,6 @@ public class Window extends JFrame {
         progressTimer.start();
         continueTimer.start();
         this.firstPlay = false;
-    }
-
-    //播放
-    private void play() {
-        if (videos.isEmpty()) {
-            return;
-        }
-        getMediaPlayer().playMedia(videos.get(videoIndex));
-        setWindowTitle();
     }
 
     private void setWindowTitle() {
@@ -633,7 +620,8 @@ public class Window extends JFrame {
             }
 
             @Override
-            public void windowLostFocus(WindowEvent e) {}
+            public void windowLostFocus(WindowEvent e) {
+            }
         };
     }
 
