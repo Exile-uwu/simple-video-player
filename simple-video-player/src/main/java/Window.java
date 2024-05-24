@@ -202,15 +202,12 @@ public class Window extends JFrame { // ********************继承**************
                     listWindow.setOpacity(0.8f);
                     setListWindowBounds();
                     listWindow.setVisible(true);
-                    setListWindowShownColor();
-                    listWindow.addComponentListener(setListWindowBackgroundWhenShownOrHidden());
-                    listWindow.setVisible(true);
                     return;
                 }
                 int x = getX();
                 int width = getWidth();
                 if (WINDOW_X != x || WINDOW_WIDTH != width) {
-                    setListWindowBounds();
+                   setListWindowBounds();
                 }
                 boolean visible = listWindow.isVisible();
                 if (visible) {
@@ -222,29 +219,7 @@ public class Window extends JFrame { // ********************继承**************
         };
     }
 
-    // 设置背景
-    private ComponentAdapter setListWindowBackgroundWhenShownOrHidden() {
-        return new ComponentAdapter() {
-            @Override
-            public void componentShown(ComponentEvent e) {
-                setListWindowShownColor();
-            }
-
-            @Override
-            public void componentHidden(ComponentEvent e) {
-                setListWindowHiddenColor();
-            }
-        };
-    }
-
-    private void setListWindowHiddenColor() {
-        listButton.setBackground(new Color(238, 238, 238));
-    }
-
-    private void setListWindowShownColor() {
-        listButton.setBackground(new Color(141, 141, 141));
-    }
-
+    //设置边界
     private void setListWindowBounds() {
         if (listWindow != null) {
             listWindow.setBounds(getWidth() + getX() - LIST_WINDOW_WIDTH - 6, getY() + 37,
