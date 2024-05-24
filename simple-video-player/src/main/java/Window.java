@@ -3,14 +3,12 @@ import java.awt.event.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Objects;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
-import utils.FileUtils;
 
 public class Window extends JFrame { // ********************继承****************
 
