@@ -117,6 +117,28 @@ public class Window extends JFrame { // 继承
         displayTime.setText(getTimeString());
         buttonPanel.add(displayTime);
 
+        
+        // 暂停/播放按钮
+        pauseButton = new Button("播放");
+        pauseButton.setPreferredSize(new Dimension(49, 23));
+        pauseButton.addMouseListener(mouseClickedMediaPause());
+        buttonPanel.add(pauseButton);
+
+
+        // 添加声音控制进度条
+        volumeProgress = new JProgressBar();
+        volumeProgress.setMinimum(0);
+        volumeProgress.setMaximum(100);
+        volumeProgress.setValue(100);
+        volumeProgress.setPreferredSize(new Dimension(100, 10));
+        volumeProgress.addMouseListener(mouseClickedSetVolumeValue());
+        buttonPanel.add(volumeProgress);
+
+        // 音量显示
+        volumeLabel = new Label();
+        setVolumeLabel(volumeProgress.getValue());
+        buttonPanel.add(volumeLabel);
+
         Button chooseButton = new Button("选择文件");
         fileDialog = new FileDialog(this);
         fileDialog.setMultipleMode(true);
@@ -139,14 +161,8 @@ public class Window extends JFrame { // 继承
         backwardButton.addMouseListener(mouseClickedBackward());
         buttonPanel.add(backwardButton);
 
-        // 暂停/播放按钮
-        pauseButton = new Button("播放");
-        pauseButton.setPreferredSize(new Dimension(49, 23));
-        pauseButton.addMouseListener(mouseClickedMediaPause());
-        buttonPanel.add(pauseButton);
-
         // 倍速播放按钮：每次递增0.5，最大为3倍速
-        Button fastForwardButton = new Button(">>>");
+        Button fastForwardButton = new Button("倍速");
         fastForwardButton.setFocusable(false);
         fastForwardButton.addMouseListener(mouseClickedFastForward());
         buttonPanel.add(fastForwardButton);
@@ -157,20 +173,6 @@ public class Window extends JFrame { // 继承
         displaySpeed.setFocusable(false);
         displaySpeed.setEnabled(false);
         buttonPanel.add(displaySpeed);
-
-        // 添加声音控制进度条
-        volumeProgress = new JProgressBar();
-        volumeProgress.setMinimum(0);
-        volumeProgress.setMaximum(100);
-        volumeProgress.setValue(100);
-        volumeProgress.setPreferredSize(new Dimension(100, 10));
-        volumeProgress.addMouseListener(mouseClickedSetVolumeValue());
-        buttonPanel.add(volumeProgress);
-
-        // 音量显示
-        volumeLabel = new Label();
-        setVolumeLabel(volumeProgress.getValue());
-        buttonPanel.add(volumeLabel);
 
         // 播放文件列表显示内容
         listContent = new JTextArea();
