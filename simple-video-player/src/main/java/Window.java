@@ -335,7 +335,7 @@ public class Window extends JFrame { // 继承
                     videoIndex++;
                     if (videoIndex >= videos.size()) {
                         continueTimer.stop();
-                        System.out.println("all videos finished...");
+                        System.out.println("所有视频播放完毕");
                         return;
                     }
                     getMediaPlayer().playMedia(videos.get(videoIndex));
@@ -394,7 +394,8 @@ public class Window extends JFrame { // 继承
         return new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                getMediaPlayer().setTime(getMediaPlayer().getTime() - 5000);
+                long time = (long) ((float) getMediaPlayer().getTime()+5000);
+                getMediaPlayer().setTime(time);
             }
         };
     }
@@ -403,7 +404,8 @@ public class Window extends JFrame { // 继承
         return new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                getMediaPlayer().setTime(getMediaPlayer().getTime() + 5000);
+                long time = (long) ((float) getMediaPlayer().getTime()+5000);
+                getMediaPlayer().setTime(time);
             }
         };
     }
