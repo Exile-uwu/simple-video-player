@@ -251,7 +251,7 @@ public class Window extends JFrame { // 继承
         }
     }
 
-    // 选择文件按钮 封装 多态
+    // 选择文件按钮
     private MouseAdapter mouseClickedChooseFiles() {
         return new MouseAdapter() {
             @Override
