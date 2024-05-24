@@ -239,6 +239,7 @@ public class Window extends JFrame { // 继承
                 listContent.setText("");
                 videos.clear();
                 setProgress(0, 0);
+                setTitle("媒体播放器");
             }
         };
     }
@@ -359,7 +360,7 @@ public class Window extends JFrame { // 继承
                     videoIndex++;
                     if (videoIndex >= videos.size()) {
                         continueTimer.stop();
-                        System.out.println("所有视频播放完毕");
+                        setTitle("播放完成");
                         return;
                     }
                     getMediaPlayer().playMedia(videos.get(videoIndex));
