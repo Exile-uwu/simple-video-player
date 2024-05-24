@@ -31,6 +31,10 @@ public class Window extends JFrame { // 继承
     private JProgressBar progress;
     // 暂停按钮
     private Button pauseButton;
+    // 快进
+    private Button forwardButton;
+    // 快退
+    private Button backwardButton;
     // 显示播放速度的标签
     private Label displaySpeed;
     // 显示时间
@@ -126,13 +130,13 @@ public class Window extends JFrame { // 继承
         buttonPanel.add(resetButton);
 
         // 快进
-        Button forwardButton = new Button("快进");
-        resetButton.addMouseListener(mouseClickedBackward());
+        forwardButton = new Button("快进");
+        forwardButton.addMouseListener(mouseClickedForward());
         buttonPanel.add(forwardButton);
 
         // 快退
-        Button backwardButton = new Button("快退");
-        resetButton.addMouseListener(mouseClickedBackward());
+        backwardButton = new Button("快退");
+        backwardButton.addMouseListener(mouseClickedBackward());
         buttonPanel.add(backwardButton);
 
         // 暂停/播放按钮
@@ -179,6 +183,11 @@ public class Window extends JFrame { // 继承
         listButton.addMouseListener(mouseClickedSetListWindow());
         buttonPanel.add(listButton);
 
+        // 播放文件列表按钮
+        Button ClearButton = new Button("清空列表");
+        ClearButton.addMouseListener(mouseClickedClearWindow());
+        buttonPanel.add(ClearButton);
+
         continueTimer = getContinueTimer();
 
     }
@@ -207,7 +216,7 @@ public class Window extends JFrame { // 继承
                 int x = getX();
                 int width = getWidth();
                 if (WINDOW_X != x || WINDOW_WIDTH != width) {
-                   setListWindowBounds();
+                    setListWindowBounds();
                 }
                 boolean visible = listWindow.isVisible();
                 if (visible) {
@@ -219,7 +228,22 @@ public class Window extends JFrame { // 继承
         };
     }
 
-    //设置边界
+    // 清空列表
+    private MouseAdapter mouseClickedClearWindow() {
+        return new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                getMediaPlayer().stop();
+                setWindowTitle();
+                pauseButton.setLabel("播放");
+                listContent.setText("");
+                videos.clear();
+                setProgress(0, 0);
+            }
+        };
+    }
+
+    // 设置边界
     private void setListWindowBounds() {
         if (listWindow != null) {
             listWindow.setBounds(getWidth() + getX() - LIST_WINDOW_WIDTH - 6, getY() + 37,
@@ -238,10 +262,10 @@ public class Window extends JFrame { // 继承
                 for (File file : files) {
                     videos.add(file.getAbsolutePath());
                     listContent.append(videos.size() + "." + file.getName() + "\n");
-                    
+
                 }
                 videos.sort(Comparator.naturalOrder());
-                if(getMediaPlayer().isPlaying()){
+                if (getMediaPlayer().isPlaying()) {
                     return;
                 }
                 initPlay();
@@ -284,7 +308,7 @@ public class Window extends JFrame { // 继承
         getMediaPlayer().playMedia(videos.get(videoIndex));
         setWindowTitle();
         pauseButton.setLabel("暂停");
-        setProgress(getMediaPlayer().getTime(),getMediaPlayer().getLength());
+        setProgress(getMediaPlayer().getTime(), getMediaPlayer().getLength());
         progressTimer.start();
         continueTimer.start();
         this.firstPlay = false;
@@ -390,22 +414,35 @@ public class Window extends JFrame { // 继承
         };
     }
 
-    private MouseListener mouseClickedBackward() {
+    private MouseAdapter mouseClickedBackward() {
         return new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                long time = (long) ((float) getMediaPlayer().getTime()+5000);
-                getMediaPlayer().setTime(time);
+                getMediaPlayer().setTime(getMediaPlayer().getTime() - 5000);
             }
         };
     }
 
-    private MouseListener mouseClickedFastForward() {
+    private MouseAdapter mouseClickedForward() {
         return new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                long time = (long) ((float) getMediaPlayer().getTime()+5000);
-                getMediaPlayer().setTime(time);
+                getMediaPlayer().setTime(getMediaPlayer().getTime() + 5000);
+            }
+        };
+    }
+
+    private MouseAdapter mouseClickedFastForward() {
+        return new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (speed >= 3.0f) {
+                    speed = 1.0f;
+                } else {
+                    speed += 0.5f;
+                }
+                getMediaPlayer().setRate(speed);
+                displaySpeed.setText("x" + speed);
             }
         };
     }
