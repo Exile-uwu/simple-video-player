@@ -6,11 +6,9 @@ public class Main {
         // 加载dll
         NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), "vlc");
 
-        @SuppressWarnings("unused")
         Window frame = new Window();
 
-       // System.exit(0);
-
+        frame.init();
     }
 
 }

@@ -12,12 +12,9 @@ import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 import utils.FileUtils;
 
-public class Window extends JFrame {
-    // private final Logger logger = LoggerFactory.getLogger(Window.class);
+public class Window extends JFrame { // ********************继承****************
 
     private static final int PROGRESS_HEIGHT = 10;
-    private static final int PROGRESS_MIN_VALUE = 0;
-    private static final int PROGRESS_MAX_VALUE = 100;
     private static final int WINDOW_X = 100;
     private static final int WINDOW_Y = 100;
     private static final int WINDOW_WIDTH = 800;
@@ -63,23 +60,13 @@ public class Window extends JFrame {
 
     public Window() {
         this.videos = new ArrayList<>(10);
-        // initVideoFilesPath(videoFolder);
         // 设置默认速度为原速
         speed = 1.0f;
         // 设置窗口标题
         setTitle("媒体播放器");
-        // 设置窗口焦点监听事件：窗口打开时、窗口获得焦点时设置默认焦点为暂停按钮
-        this.addWindowFocusListener(getWindowFocusListener());
-
-        // 窗口关闭事件：释放资源并退出程序
-        addWindowListener(closeWindowReleaseMedia());
-        // 设置默认窗口关闭事件
-         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // 设置窗口位置
         setBounds(WINDOW_X, WINDOW_Y, WINDOW_WIDTH, WINDOW_HEIGHT);
-        // 最大化显示窗口
-        //setExtendedState(JFrame.MAXIMIZED_BOTH);
 
         // 图标
         Image icon = Toolkit.getDefaultToolkit().getImage("/resources/icon.jpeg");
@@ -94,44 +81,30 @@ public class Window extends JFrame {
         // ======播放面板======
         JPanel player = new JPanel();
         contentPane.add(player, BorderLayout.CENTER);
-        contentPane.add(player);
         player.setLayout(new BorderLayout(0, 0));
         // 创建播放器组件并添加到容器中去
         mediaPlayerComponent = new EmbeddedMediaPlayerComponent();
         player.add(mediaPlayerComponent);
-        // 视频表面焦点监听：表面获得焦点时设置默认焦点为暂停按钮
-        getVideoSurface().addFocusListener(videoSurfaceFocusAction());
-        getMediaPlayer().setRepeat(true); // 重复播放
 
         // ======底部面板======
         JPanel bottomPanel = new JPanel();
-        BoxLayout boxLayout = new BoxLayout(bottomPanel, BoxLayout.Y_AXIS);
+        BoxLayout boxLayout = new BoxLayout(bottomPanel, 1);
         bottomPanel.setLayout(boxLayout);
         contentPane.add(bottomPanel, BorderLayout.SOUTH);
 
         // ------进度条组件面板------
         JPanel progressPanel = new JPanel();
         progress = new JProgressBar();
-        progress.setMinimum(PROGRESS_MIN_VALUE);
-        progress.setMaximum(PROGRESS_MAX_VALUE);
         progress.setPreferredSize(getNewDimension());
-        // 设置进度条中间显示进度百分比
-        progress.setStringPainted(false);
-        // 进度条进度的颜色
-        progress.setForeground(new Color(0, 0, 0));
-        // 进度条背景的颜色
-        progress.setBackground(new Color(255, 255, 255));
 
         // 点击进度条调整视频播放指针
         progress.addMouseListener(setVideoPlayPoint());
         // 定时器
         progressTimer = getProgressTimer();
-        // progressTimer.start();
 
         progressPanel.add(progress);
         progressPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         bottomPanel.add(progressPanel);
-        // contentPane.add(progressPanel, BorderLayout.SOUTH);
 
         // ------按钮组件面板------
         JPanel buttonPanel = new JPanel();
@@ -149,16 +122,24 @@ public class Window extends JFrame {
         chooseButton.addMouseListener(mouseClickedChooseFiles());
         buttonPanel.add(chooseButton);
 
-        // 重置按钮：设置播放速度为原速
+        // 重置按钮
         Button resetButton = new Button("重置");
-        resetButton.setFocusable(false);
-        resetButton.addMouseListener(mouseClickedResetSpeed());
+        resetButton.addMouseListener(mouseClickedResetVideo());
         buttonPanel.add(resetButton);
+
+        // 快进
+        Button forwardButton = new Button("快进");
+        resetButton.addMouseListener(mouseClickedBackward());
+        buttonPanel.add(forwardButton);
+
+        // 快退
+        Button backwardButton = new Button("快退");
+        resetButton.addMouseListener(mouseClickedBackward());
+        buttonPanel.add(backwardButton);
 
         // 暂停/播放按钮
         pauseButton = new Button("播放");
         pauseButton.setPreferredSize(new Dimension(49, 23));
-        pauseButton.addKeyListener(spaceKeyPressMediaPause());
         pauseButton.addMouseListener(mouseClickedMediaPause());
         buttonPanel.add(pauseButton);
 
@@ -177,7 +158,6 @@ public class Window extends JFrame {
 
         // 添加声音控制进度条
         volumeProgress = new JProgressBar();
-        volumeProgress.setFocusable(false);
         volumeProgress.setMinimum(0);
         volumeProgress.setMaximum(100);
         volumeProgress.setValue(100);
@@ -187,49 +167,30 @@ public class Window extends JFrame {
 
         // 音量显示
         volumeLabel = new Label();
-        volumeLabel.setFocusable(false);
-        volumeLabel.setEnabled(false);
         setVolumeLabel(volumeProgress.getValue());
         buttonPanel.add(volumeLabel);
 
         // 播放文件列表显示内容
         listContent = new JTextArea();
+        listContent.setText("");
         listContent.setLineWrap(true);
-        listContent.setFocusable(false);
+        listContent.setEditable(false);
 
         // 播放文件列表按钮
         listButton = new Button("播放列表");
-        listButton.setFocusable(false);
         listButton.addMouseListener(mouseClickedSetListWindow());
         buttonPanel.add(listButton);
 
-        // 监听窗口大小，设置进度条宽度为窗口宽度（但是对于最大化和还原窗口无效，原因未知<-_->）
-        this.addComponentListener(windowResizedResetProgressWidth());
-        // 监听窗口最大化和还原，设置进度条宽度为窗口宽度
-        this.addWindowStateListener(windowStateChangedResetProgressWidth());
-        // 监听鼠标滑轮滚动，设置音量
-        this.addMouseWheelListener(mouseWheelMovedSetVolume());
-        this.addComponentListener(windowMovedAction());
-
         continueTimer = getContinueTimer();
-        // continueTimer.start();
 
-        // 设置窗口最小值
-        this.setMinimumSize(new Dimension(600, 400));
+    }
 
+    public void init() {
         // 设置窗口可见
         this.setVisible(true);
     }
 
-    private ComponentAdapter windowMovedAction() {
-        return new ComponentAdapter() {
-            @Override
-            public void componentMoved(ComponentEvent e) {
-                setListWindowInvisible();
-            }
-        };
-    }
-
+    // 播放列表按钮点击事件
     private MouseAdapter mouseClickedSetListWindow() {
         return new MouseAdapter() {
             @Override
@@ -245,6 +206,7 @@ public class Window extends JFrame {
                     listWindow.setVisible(true);
                     setListWindowShownColor();
                     listWindow.addComponentListener(setListWindowBackgroundWhenShownOrHidden());
+                    listWindow.setVisible(true);
                     return;
                 }
                 int x = getX();
@@ -262,7 +224,7 @@ public class Window extends JFrame {
         };
     }
 
-    // 设置北京
+    // 设置背景
     private ComponentAdapter setListWindowBackgroundWhenShownOrHidden() {
         return new ComponentAdapter() {
             @Override
@@ -299,41 +261,17 @@ public class Window extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 fileDialog.setVisible(true);
                 File[] files = fileDialog.getFiles();
-                videos.clear();
-                listContent.setText("");
+                listContent.setText(listContent.getText());
                 for (File file : files) {
                     videos.add(file.getAbsolutePath());
                     listContent.append(videos.size() + "." + file.getName() + "\n");
+                    
                 }
                 videos.sort(Comparator.naturalOrder());
-                if (!Objects.isNull(getMediaPlayer())) {
-                    getMediaPlayer().stop();
+                if(getMediaPlayer().isPlaying()){
+                    return;
                 }
-                pauseButton.setLabel("播放");
-                firstPlay = true;
-                setProgress(0, 0);
-                progressTimer.stop();
-                continueTimer.stop();
-                videoIndex = 0;
-                loading();
                 initPlay();
-            }
-        };
-    }
-
-    private MouseAdapter mouseWheelMovedSetVolume() {
-        return new MouseAdapter() {
-            @Override
-            public void mouseWheelMoved(MouseWheelEvent e) {
-                // 1-下，-1-上
-                int wheelRotation = e.getWheelRotation();
-                if (wheelRotation == 1) {
-                    // 减小音量
-                    setVolume(volumeProgress.getValue() - 5);
-                } else if (wheelRotation == -1) {
-                    // 增大音量
-                    setVolume(volumeProgress.getValue() + 5);
-                }
             }
         };
     }
@@ -365,15 +303,6 @@ public class Window extends JFrame {
         getMediaPlayer().setVolume(value);
     }
 
-    // 加载
-    private void loading() {
-        if (videos.isEmpty()) {
-            return;
-        }
-        String path = videos.get(videoIndex);
-        setTitle("媒体播放器" + FileUtils.getFileName(path) + "（预加载）");
-    }
-
     // 初始化播放
     private void initPlay() {
         if (videos.isEmpty()) {
@@ -382,7 +311,7 @@ public class Window extends JFrame {
         getMediaPlayer().playMedia(videos.get(videoIndex));
         setWindowTitle();
         pauseButton.setLabel("暂停");
-        setProgress(getMediaPlayer().getTime(), getMediaPlayer().getLength());
+        setProgress(getMediaPlayer().getTime(),getMediaPlayer().getLength());
         progressTimer.start();
         continueTimer.start();
         this.firstPlay = false;
@@ -449,11 +378,6 @@ public class Window extends JFrame {
         return new Timer(1000, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (getProgress().getValue() >= PROGRESS_MAX_VALUE) {
-                    // 结束定时器
-                    progressTimer.stop();
-                    return;
-                }
                 // 设置进度值
                 setProgress(getMediaPlayer().getTime(), getMediaPlayer().getLength());
             }
@@ -465,47 +389,6 @@ public class Window extends JFrame {
         int value = (int) (percent * 100);
         getProgress().setValue(value);
         displayTime.setText(getTimeString(curr, total));
-    }
-
-    private WindowAdapter windowStateChangedResetProgressWidth() {
-        return new WindowAdapter() {
-            @Override
-            public void windowStateChanged(WindowEvent state) {
-                // state=1或7为最小化，此处不处理
-
-                if (state.getNewState() == 0) {
-                    // System.out.println("窗口恢复到初始状态");
-                    setProgressWidthAutoAdaptWindow();
-                    setListWindowInvisible();
-                    setListWindowBounds();
-                } else if (state.getNewState() == 6) {
-                    // System.out.println("窗口最大化");
-                    setProgressWidthAutoAdaptWindow();
-                    setListWindowInvisible();
-                    setListWindowBounds();
-                }
-            }
-        };
-    }
-
-    private void setListWindowInvisible() {
-        if (listWindow != null && listWindow.isVisible()) {
-            listWindow.setVisible(false);
-        }
-    }
-
-    private void setProgressWidthAutoAdaptWindow() {
-        getProgress().setPreferredSize(getNewDimension());
-    }
-
-    private ComponentAdapter windowResizedResetProgressWidth() {
-        return new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                setProgressWidthAutoAdaptWindow();
-                setListWindowInvisible();
-            }
-        };
     }
 
     private Dimension getNewDimension() {
@@ -525,36 +408,20 @@ public class Window extends JFrame {
         };
     }
 
-    private FocusAdapter videoSurfaceFocusAction() {
-        return new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                setPauseButtonAsDefaultFocus();
-            }
-        };
-    }
-
-    private WindowAdapter closeWindowReleaseMedia() {
-        return new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                getMediaPlayer().stop();
-                getMediaPlayer().release();
-                System.exit(0);
-            }
-        };
-    }
-
-    private MouseListener mouseClickedResetSpeed() {
+    private MouseListener mouseClickedResetVideo() {
         return new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (speed == 1.0f) {
-                    return;
-                }
-                speed = 1.0f;
-                getMediaPlayer().setRate(speed);
-                displaySpeed.setText("x" + speed);
+                getMediaPlayer().setTime(0);
+            }
+        };
+    }
+
+    private MouseListener mouseClickedBackward() {
+        return new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                getMediaPlayer().setTime(getMediaPlayer().getTime() - 5000);
             }
         };
     }
@@ -563,13 +430,7 @@ public class Window extends JFrame {
         return new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (speed >= 3.0f) {
-                    speed = 1.0f;
-                } else {
-                    speed += 0.5f;
-                }
-                getMediaPlayer().setRate(speed);
-                displaySpeed.setText("x" + speed);
+                getMediaPlayer().setTime(getMediaPlayer().getTime() + 5000);
             }
         };
     }
@@ -607,56 +468,12 @@ public class Window extends JFrame {
         }
     }
 
-    private WindowFocusListener getWindowFocusListener() {
-        return new WindowAdapter() {
-            @Override
-            public void windowOpened(WindowEvent e) {
-                setPauseButtonAsDefaultFocus();
-            }
-
-            @Override
-            public void windowGainedFocus(WindowEvent e) {
-                setPauseButtonAsDefaultFocus();
-            }
-
-            @Override
-            public void windowLostFocus(WindowEvent e) {
-            }
-        };
-    }
-
-    private void setPauseButtonAsDefaultFocus() {
-        pauseButton.requestFocus();
-    }
-
-    private KeyListener spaceKeyPressMediaPause() {
-        return new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (videos.isEmpty()) {
-                    return;
-                }
-                if (firstPlay) {
-                    initPlay();
-                    return;
-                }
-                if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-                    setMediaStatusAndPauseButton();
-                }
-            }
-        };
-    }
-
     private JProgressBar getProgress() {
         return progress;
     }
 
     private EmbeddedMediaPlayer getMediaPlayer() {
         return mediaPlayerComponent.getMediaPlayer();
-    }
-
-    private Canvas getVideoSurface() {
-        return mediaPlayerComponent.getVideoSurface();
     }
 
 }
