@@ -10,7 +10,7 @@ import javax.swing.border.EmptyBorder;
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 
-public class Window extends JFrame { // ********************继承****************
+public class Window extends JFrame { // 继承
 
     private static final int PROGRESS_HEIGHT = 10;
     private static final int WINDOW_X = 100;
@@ -227,7 +227,7 @@ public class Window extends JFrame { // ********************继承**************
         }
     }
 
-    // 选择文件按钮
+    // 选择文件按钮 封装 多态
     private MouseAdapter mouseClickedChooseFiles() {
         return new MouseAdapter() {
             @Override
