@@ -233,12 +233,12 @@ public class Window extends JFrame { // 继承
         return new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                getMediaPlayer().stop();
-                setWindowTitle();
-                pauseButton.setLabel("播放");
                 listContent.setText("");
                 videos.clear();
                 setProgress(0, 0);
+                getMediaPlayer().stop();
+                setWindowTitle();
+                pauseButton.setLabel("播放");
                 setTitle("媒体播放器");
             }
         };
